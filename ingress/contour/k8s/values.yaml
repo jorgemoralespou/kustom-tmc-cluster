@@ -1,0 +1,6 @@
+#@data/values
+---
+namespace: tanzu-system-ingress
+app: contour
+org: vmware-tanzu
+privileged_clusterrole_name: vmware-system-tmc-psp-privileged
