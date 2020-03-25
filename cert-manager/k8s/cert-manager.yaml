@@ -14,7 +14,7 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: #@ data.values.name + "-cainjector"
+  name: #@ "{}-cainjector".format(data.values.name)
   namespace: #@ data.values.namespace
 ---
 apiVersion: v1
@@ -27,13 +27,13 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: #@ data.values.name + "-webhook"
+  name: #@ "{}-webhook".format(data.values.name)
   namespace: #@ data.values.namespace
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: #@ data.values.name + "-cainjector"
+  name: #@ "{}-cainjector".format(data.values.name)
 rules:
   - apiGroups: ["cert-manager.io"]
     resources: ["certificates"]
@@ -57,7 +57,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: #@ data.values.name + "-controller-issuers"
+  name: #@ "{}-controller-issuers".format(data.values.name)
 rules:
   - apiGroups: ["cert-manager.io"]
     resources: ["issuers", "issuers/status"]
@@ -75,7 +75,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: #@ data.values.name + "-controller-clusterissuers"
+  name: #@ "{}-controller-clusterissuers".format(data.values.name)
 rules:
   - apiGroups: ["cert-manager.io"]
     resources: ["clusterissuers", "clusterissuers/status"]
@@ -93,7 +93,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: #@ data.values.name + "-controller-certificates"
+  name: #@ "{}-controller-certificates".format(data.values.name)
 rules:
   - apiGroups: ["cert-manager.io"]
     resources: ["certificates", "certificates/status", "certificaterequests", "certificaterequests/status"]
@@ -117,7 +117,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: #@ data.values.name + "-controller-orders"
+  name: #@ "{}-controller-orders".format(data.values.name)
 rules:
   - apiGroups: ["acme.cert-manager.io"]
     resources: ["orders", "orders/status"]
@@ -144,7 +144,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: #@ data.values.name + "-controller-challenges"
+  name: #@ "{}-controller-challenges".format(data.values.name)
 rules:
   - apiGroups: ["acme.cert-manager.io"]
     resources: ["challenges", "challenges/status"]
@@ -167,6 +167,9 @@ rules:
   - apiGroups: ["extensions"]
     resources: ["ingresses"]
     verbs: ["get", "list", "watch", "create", "delete", "update"]
+  - apiGroups: ["route.openshift.io"]
+    resources: ["routes/custom-host"]
+    verbs: ["create"]
   - apiGroups: ["acme.cert-manager.io"]
     resources: ["challenges/finalizers"]
     verbs: ["update"]
@@ -177,7 +180,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: #@ data.values.name + "-controller-ingress-shim"
+  name: #@ "{}-controller-ingress-shim".format(data.values.name)
 rules:
   - apiGroups: ["cert-manager.io"]
     resources: ["certificates", "certificaterequests"]
@@ -238,37 +241,24 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: #@ data.values.name + "-cainjector"
+  name: #@ "{}-cainjector".format(data.values.name)
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: #@ data.values.name + "-cainjector"
+  name: #@ "{}-cainjector".format(data.values.name)
 subjects:
-  - name: #@ data.values.name + "-cainjector"
+  - name: #@ "{}-cainjector".format(data.values.name)
     namespace: #@ data.values.namespace
     kind: ServiceAccount
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: #@ data.values.name + "-controller-issuers"
+  name: #@ "{}-controller-issuers".format(data.values.name)
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: #@ data.values.name + "-controller-issuers"
-subjects:
-  - name: #@ data.values.name
-    namespace: #@ data.values.namespace
-    kind: ServiceAccount
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
-metadata:
-  name: #@ data.values.name + "-controller-clusterissuers"
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: #@ data.values.name + "-controller-clusterissuers"
+  name: #@ "{}-controller-issuers".format(data.values.name)
 subjects:
   - name: #@ data.values.name
     namespace: #@ data.values.namespace
@@ -277,11 +267,11 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: #@ data.values.name + "-controller-certificates"
+  name: #@ "{}-controller-clusterissuers".format(data.values.name)
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: #@ data.values.name + "-controller-certificates"
+  name: #@ "{}-controller-clusterissuers".format(data.values.name)
 subjects:
   - name: #@ data.values.name
     namespace: #@ data.values.namespace
@@ -290,11 +280,11 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: #@ data.values.name + "-controller-orders"
+  name: #@ "{}-controller-certificates".format(data.values.name)
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: #@ data.values.name + "-controller-orders"
+  name: #@ "{}-controller-certificates".format(data.values.name)
 subjects:
   - name: #@ data.values.name
     namespace: #@ data.values.namespace
@@ -303,11 +293,11 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: #@ data.values.name + "-controller-challenges"
+  name: #@ "{}-controller-orders".format(data.values.name)
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: #@ data.values.name + "-controller-challenges"
+  name: #@ "{}-controller-orders".format(data.values.name)
 subjects:
   - name: #@ data.values.name
     namespace: #@ data.values.namespace
@@ -316,11 +306,24 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: #@ data.values.name + "-controller-ingress-shim"
+  name: #@ "{}-controller-challenges".format(data.values.name)
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: #@ data.values.name + "-controller-ingress-shim"
+  name: #@ "{}-controller-challenges".format(data.values.name)
+subjects:
+  - name: #@ data.values.name
+    namespace: #@ data.values.namespace
+    kind: ServiceAccount
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: #@ "{}-controller-ingress-shim".format(data.values.name)
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: #@ "{}-controller-ingress-shim".format(data.values.name)
 subjects:
   - name: #@ data.values.name
     namespace: #@ data.values.namespace
@@ -337,13 +340,13 @@ roleRef:
 subjects:
 - apiGroup: ""
   kind: ServiceAccount
-  name: #@ data.values.name + "-webhook"
+  name: #@ "{}-webhook".format(data.values.name)
   namespace: #@ data.values.namespace
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
-  name: #@ data.values.name + "-cainjector:leaderelection"
+  name: #@ "{}-cainjector:leaderelection".format(data.values.name)
   namespace: kube-system
 rules:
   - apiGroups: [""]
@@ -353,7 +356,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
-  name: #@ data.values.name + ":leaderelection"
+  name: #@ "{}:leaderelection".format(data.values.name)
   namespace: kube-system
 rules:
   - apiGroups: [""]
@@ -363,27 +366,27 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
-  name: #@ data.values.name + "-cainjector:leaderelection"
+  name: #@ "{}-cainjector:leaderelection".format(data.values.name)
   namespace: kube-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: #@ data.values.name + "-cainjector:leaderelection"
+  name: #@ "{}-cainjector:leaderelection".format(data.values.name)
 subjects:
   - apiGroup: ""
     kind: ServiceAccount
-    name: #@ data.values.name + "-cainjector"
+    name: #@ "{}-cainjector".format(data.values.name)
     namespace: #@ data.values.namespace
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
-  name: #@ data.values.name + ":leaderelection"
+  name: #@ "{}:leaderelection".format(data.values.name)
   namespace: kube-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: #@ data.values.name + ":leaderelection"
+  name: #@ "{}:leaderelection".format(data.values.name)
 subjects:
   - apiGroup: ""
     kind: ServiceAccount
@@ -402,7 +405,7 @@ roleRef:
 subjects:
 - apiGroup: ""
   kind: ServiceAccount
-  name: #@ data.values.name + "-webhook"
+  name: #@ "{}-webhook".format(data.values.name)
   namespace: #@ data.values.namespace
 ---
 apiVersion: v1
@@ -423,7 +426,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: #@ data.values.name + "-webhook"
+  name: #@ "{}-webhook".format(data.values.name)
   namespace: #@ data.values.namespace
 spec:
   type: ClusterIP
@@ -439,7 +442,7 @@ spec:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: #@ "privileged-{}".format(data.values.name)
+  name: #@ "privileged-{}-webhook".format(data.values.name)
   namespace: #@ data.values.namespace
   labels: #@ labels()
 roleRef:
@@ -454,7 +457,7 @@ subjects:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: #@ data.values.name + "-cainjector"
+  name: #@ "{}-cainjector".format(data.values.name)
   namespace: #@ data.values.namespace
 spec:
   replicas: 1
@@ -471,10 +474,10 @@ spec:
         app.kubernetes.io/instance: #@ data.values.name
       annotations:
     spec:
-      serviceAccountName: #@ data.values.name + "-cainjector"
+      serviceAccountName: #@ "{}-cainjector".format(data.values.name)
       containers:
         - name: cert-manager
-          image: "quay.io/jetstack/cert-manager-cainjector:v0.12.0"
+          image: "quay.io/jetstack/cert-manager-cainjector:v0.14.0"
           imagePullPolicy: IfNotPresent
           args:
           - --v=2
@@ -513,7 +516,7 @@ spec:
       serviceAccountName: #@ data.values.name
       containers:
         - name: cert-manager
-          image: "quay.io/jetstack/cert-manager-controller:v0.12.0"
+          image: "quay.io/jetstack/cert-manager-controller:v0.14.0"
           imagePullPolicy: IfNotPresent
           args:
           - --v=2
@@ -539,7 +542,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: #@ data.values.name + "-webhook"
+  name: #@ "{}-webhook".format(data.values.name)
   namespace: #@ data.values.namespace
 spec:
   replicas: 1
@@ -556,10 +559,10 @@ spec:
         app.kubernetes.io/instance: #@ data.values.name
       annotations:
     spec:
-      serviceAccountName: #@ data.values.name + "-webhook"
+      serviceAccountName: #@ "{}-webhook".format(data.values.name)
       containers:
         - name: cert-manager
-          image: "quay.io/jetstack/cert-manager-webhook:v0.12.0"
+          image: "quay.io/jetstack/cert-manager-webhook:v0.14.0"
           imagePullPolicy: IfNotPresent
           args:
           - --v=2
@@ -589,12 +592,12 @@ spec:
       volumes:
       - name: certs
         secret:
-          secretName: #@ data.values.name + "-webhook-tls"
+          secretName: #@ "{}-webhook-tls".format(data.values.name)
 ---
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: #@ data.values.name + "-webhook"
+  name: #@ "{}-webhook".format(data.values.name)
   annotations:
     cert-manager.io/inject-ca-from-secret: #@ "{}/{}-webhook-tls".format(data.values.namespace,data.values.name)
 webhooks:
@@ -614,14 +617,14 @@ webhooks:
     sideEffects: None
     clientConfig:
       service:
-        name: #@ data.values.name + "-webhook"
+        name: #@ "{}-webhook".format(data.values.name)
         namespace: #@ data.values.namespace
         path: /mutate
 ---
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: #@ data.values.name + "-webhook"
+  name: #@ "{}-webhook".format(data.values.name)
   annotations:
     cert-manager.io/inject-ca-from-secret: #@ "{}/{}-webhook-tls".format(data.values.namespace,data.values.name)
 webhooks:
@@ -651,6 +654,6 @@ webhooks:
     sideEffects: None
     clientConfig:
       service:
-        name: #@ data.values.name + "-webhook"
+        name: #@ "{}-webhook".format(data.values.name)
         namespace: #@ data.values.namespace
         path: /mutate
