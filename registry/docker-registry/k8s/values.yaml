@@ -1,0 +1,10 @@
+#@data/values
+---
+namespace: tanzu-system-docker-registry
+name: docker-registry
+labels:
+  app: docker-registry
+  org: vmware-tanzu
+secrets:
+  htpasswd: admin:$2y$05$tZvY1U.XbxwyaT.gOK7.ieEKfDHkxDUYQ7NA38EtS6/UojPFF2q7y
+  hashared: replicated

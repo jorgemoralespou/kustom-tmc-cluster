@@ -1,0 +1,8 @@
+#@data/values
+---
+namespace: vmware-system-ingress
+name: nginx-ingress
+labels:
+  app: contour
+  org: vmware-tanzu
+privileged_clusterrole_name: vmware-system-tmc-psp-privileged

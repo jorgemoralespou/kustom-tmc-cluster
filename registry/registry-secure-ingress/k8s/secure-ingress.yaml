@@ -1,0 +1,49 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:base64", "base64")
+
+#@ def labels():
+app: #@ data.values.labels.app
+org: #@ data.values.labels.org
+#@ end
+
+---
+apiVersion: extensions/v1beta1 
+kind: Ingress
+metadata:
+  name: #@ data.values.name
+  namespace: #@ data.values.namespace
+  labels: #@ labels()
+  annotations:
+    cert-manager.io/cluster-issuer: #@ "letsencrypt-prod-{}".format(data.values.name)
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: 200m
+spec:
+  rules:
+  - host: #@ data.values.domain
+    http:
+      paths:
+      - backend:
+          serviceName: #@ data.values.name
+          servicePort: 5000
+        path: /
+  tls:
+  - hosts:
+    - #@ data.values.domain
+    secretName: #@ data.values.name
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: #@ "letsencrypt-prod-{}".format(data.values.name)
+  namespace: #@ data.values.namespace
+  labels: #@ labels()
+spec:
+  acme:
+    email: #@ data.values.email
+    privateKeySecretRef:
+      name: #@ "letsencrypt-prod-{}".format(data.values.name)
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - http01:
+        ingress:
+          class: nginx

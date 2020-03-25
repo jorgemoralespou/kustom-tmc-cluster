@@ -1,0 +1,8 @@
+#@data/values
+---
+namespace: sample-app
+name: helloworld
+labels:
+  app: sample
+  org: vmware-tanzu
+host: www.failk8s.com

@@ -1,0 +1,66 @@
+
+#@ load("@ytt:data", "data")
+
+#@ def labels():
+app: #@ data.values.labels.app
+org: #@ data.values.labels.org
+#@ end
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ data.values.namespace 
+  labels: #@ labels()
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: #@ data.values.name
+  namespace: #@ data.values.namespace
+  labels: #@ labels()
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: #@ data.values.name
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: #@ data.values.name
+    spec:
+      containers:
+      - image: quay.io/jorgemoralespou/go-helloworld:latest
+        name: #@ data.values.name
+        resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: #@ data.values.name
+  namespace: #@ data.values.namespace
+  labels: #@ labels()
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: #@ data.values.name
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: #@ data.values.name
+  namespace: #@ data.values.namespace
+  labels: #@ labels()
+spec:
+  rules:
+  - host: #@ data.values.host
+    http:
+      paths:
+      - backend:
+          serviceName: #@ data.values.name
+          servicePort: 8080
+        path: /hello

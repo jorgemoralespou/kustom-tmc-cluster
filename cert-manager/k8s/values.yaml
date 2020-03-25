@@ -1,0 +1,8 @@
+#@data/values
+---
+namespace: tanzu-system-cert-manager
+name: cert-manager
+labels:
+  app: contour
+  org: vmware-tanzu
+privileged_clusterrole_name: vmware-system-tmc-psp-privileged

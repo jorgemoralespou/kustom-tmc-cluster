@@ -32,3 +32,11 @@ kapp -a contour delete -n default -y
 This contour configuration at [k8s/contour.yaml](k8s/contour.yaml) is generated for [Contour 1.3](https://raw.githubusercontent.com/projectcontour/contour/release-1.3/examples/render/contour.yaml)
 
 The values used by default are in [k8s/values.yaml](k8s/values.yaml)
+
+By default, the Load Balancer will be installed as a Network Load Balancer. If you rather prefer the Classic TCP flavour, provide this flag to ytt when processing the template:
+
+```
+-v LB_Type=tcp
+```
+
+Possible values are: **nlb** and **tcp**

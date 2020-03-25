@@ -1,0 +1,9 @@
+#@data/values
+---
+namespace: tanzu-system-docker-registry
+name: docker-registry
+labels:
+  app: docker-registry
+  org: vmware-tanzu
+email: jorgemoralespou@gmail.com
+domain: registry.failk8s.dev
