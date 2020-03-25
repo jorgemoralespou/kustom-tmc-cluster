@@ -223,21 +223,6 @@ rules:
     resources: ["certificates", "certificaterequests", "issuers"]
     verbs: ["create", "delete", "deletecollection", "patch", "update"]
 ---
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: #@ data.values.name + "-webhook:webhook-requester"
-rules:
-- apiGroups:
-  - admission.cert-manager.io
-  resources:
-  - certificates
-  - certificaterequests
-  - issuers
-  - clusterissuers
-  verbs:
-  - create
----
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
@@ -330,20 +315,6 @@ subjects:
     kind: ServiceAccount
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
-metadata:
-  name: #@ data.values.name + "-webhook:auth-delegator"
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: system:auth-delegator
-subjects:
-- apiGroup: ""
-  kind: ServiceAccount
-  name: #@ "{}-webhook".format(data.values.name)
-  namespace: #@ data.values.namespace
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
   name: #@ "{}-cainjector:leaderelection".format(data.values.name)
@@ -392,21 +363,6 @@ subjects:
     kind: ServiceAccount
     name: #@ data.values.name
     namespace: #@ data.values.namespace
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: RoleBinding
-metadata:
-  name: #@ data.values.name + "-webhook:webhook-authentication-reader"
-  namespace: kube-system
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: extension-apiserver-authentication-reader
-subjects:
-- apiGroup: ""
-  kind: ServiceAccount
-  name: #@ "{}-webhook".format(data.values.name)
-  namespace: #@ data.values.namespace
 ---
 apiVersion: v1
 kind: Service
