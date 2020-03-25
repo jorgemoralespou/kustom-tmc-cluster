@@ -143,8 +143,8 @@ spec:
         - name: #@ "{}-config".format(data.values.name)
           configMap:
             name: #@ "{}-config".format(data.values.name)
-#@ if data.values.insecure-route
 ---
+#@ if data.values.insecure_route:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -162,3 +162,5 @@ spec:
           serviceName: docker-registry
           servicePort: 5000
         path: /
+---
+#@ end

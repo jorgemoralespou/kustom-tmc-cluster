@@ -201,7 +201,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: #@ data.values.name + "-view"
+  name: #@ "{}-view".format(data.values.name)
   labels:
     rbac.authorization.k8s.io/aggregate-to-view: "true"
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
@@ -214,7 +214,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: #@ data.values.name + "-edit"
+  name: #@ "{}-edit".format(data.values.name)
   labels:
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
@@ -422,7 +422,7 @@ spec:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: #@ "privileged-{}-webhook".format(data.values.name)
+  name: #@ "privileged-{}".format(data.values.name)
   namespace: #@ data.values.namespace
   labels: #@ labels()
 roleRef:
@@ -430,6 +430,12 @@ roleRef:
   kind: ClusterRole
   name: #@ data.values.privileged_clusterrole_name
 subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: #@ "system:serviceaccount:{}:{}".format(data.values.namespace,data.values.name)
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: #@ "system:serviceaccount:{}:{}-cainjector".format(data.values.namespace,data.values.name)
 - apiGroup: rbac.authorization.k8s.io
   kind: User
   name: #@ "system:serviceaccount:{}:{}-webhook".format(data.values.namespace,data.values.name)

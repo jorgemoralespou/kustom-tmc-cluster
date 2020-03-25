@@ -25,5 +25,5 @@ ytt -f cert-manager/k8s | kapp deploy -a cert-manager -n default -y -f -
 # registry
 ytt -f registry/docker-registry/k8s | kapp deploy -a docker-registry -n default -y -f -
 # registry-secure
-ytt -f registry/registry/secure-ingress/k8s | kapp deploy -a docker-secure-ingress -n default -y -f -
+ytt -f registry/registry-secure-ingress/k8s | kapp deploy -a docker-secure-ingress -n default -y -f -
 ```
