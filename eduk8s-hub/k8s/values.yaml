@@ -1,0 +1,16 @@
+#@data/values
+---
+namespace: eduk8s
+name: eduk8s-hub
+labels:
+  app: eduk8s-hub
+  org: eduk8s
+host: hub.training.failk8s.dev
+secure: True
+ingress:
+  secret: eduk8s-hub
+  use_certmanager: True
+issuer:
+  email: jorgemoralespou@gmail.com
+  ingressclass: nginx
+  acme_server: https://acme-v02.api.letsencrypt.org/directory
